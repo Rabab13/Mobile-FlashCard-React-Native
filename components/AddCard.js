@@ -1,7 +1,6 @@
 // Reference https://reactnavigation.org/docs/navigation-prop/
 import React, { Component } from 'react'
-import { View, TextInput, KeyboardAvoidingView,
- Platform, TouchableOpacity, Alert} from 'react-native'
+import { View, TextInput, KeyboardAvoidingView, Alert} from 'react-native'
 import { connect } from 'react-redux'
 import { NavigationActions } from 'react-navigation'
 import { addCardToDeck } from '../actions'
