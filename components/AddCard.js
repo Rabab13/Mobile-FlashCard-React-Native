@@ -1,81 +1,121 @@
-
-  
-import React, { Component } from 'react';
-import { Keyboard, Text, TextInput, TouchableOpacity, View,StatusBar } from 'react-native';
-import * as actions from '../actions';
-import * as storage from '../utils/api';
-import { connect } from 'react-redux';
-import { styles } from '../utils/styles';
-import { Constants } from 'expo'
-
-class AddCard extends Component {
-  state = {
-    question: '',
-    answer: ''
-  };
-
-  static navigationOptions = ({navigation}) => {
-    return {
-      title: `Add card`
-    }
-  };
-
-  submit = () => {
-    if (this.state.question && this.state.answer) {
-      const {dispatch, navigation} = this.props;
-
-      dispatch(actions.addCardToDeck(navigation.state.params.deckId, this.state.question, this.state.answer));
-      storage.addCardToDeck(navigation.state.params.deckId, this.state.question, this.state.answer)
-      .then(() => {
-        this.setState({question: '', answer: ''});
-        Keyboard.dismiss();
-        this.props.navigation.navigate('Deck', {deckId: this.props.navigation.state.params.deckId});
-      })
-    }
-    else {
-      alert('All fields are required!');
-    }
-  };
-
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Add card to { this.props.navigation.state.params.deckId } deck</Text>
-
-        <View style={{flex: 2}}>
-          <Text style={styles.formLabel}>Question *</Text>
-          <TextInput
-            style={styles.formInput}
-            onChangeText={(question) => this.setState({question})}
-            value={this.state.question}
-          />
-          <Text style={styles.formLabel}>Answer *</Text>
-          <TextInput
-            style={styles.formInput}
-            onChangeText={(answer) => this.setState({answer})}
-            value={this.state.answer}
-          />
-          <TouchableOpacity
-            style={styles.button}
-            onPress={this.submit}>
-            <Text style={styles.buttonText}>Add card</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  }
-}
+// Reference https://reactnavigation.org/docs/navigation-prop/
+import React, { Component } from 'react'
+import { View, TextInput, KeyboardAvoidingView,
+ Platform, TouchableOpacity, Alert} from 'react-native'
+import { connect } from 'react-redux'
+import { NavigationActions } from 'react-navigation'
+import { addCardToDeck } from '../actions'
+import TextButton from './TextButton'
+import { pink } from '../utils/colors'
+import styles from '../utils/styles'
 
 
-
-function AppStatusBar ({backgroundColor, ...props}) {
+// Create btn function in order to create new card.
+function SubmitBtn({ onPress }) {
   return (
-    <View style={{ backgroundColor, height: Constants.statusBarHeight }}>
-      <StatusBar translucent backgroundColor={backgroundColor} {...props} />
-    </View>
+    <TouchableOpacity
+      style={ Platform.OS === 'ios' ? styles.iosSubmitBtn : styles.androidSubmitBtn }
+      onPress={ onPress }>
+    </TouchableOpacity>
   )
 }
 
+class AddCard extends Component {
+   state = {
+    question: '',
+    answer: ''
+  }
 
+  handleQuestionCard = (question) => {
+    this.setState(() => ({ question }))
+  }
 
-export default connect()(AddCard,AppStatusBar);
+  handleAnswerCard= (answer) => {
+    this.setState(() => ({ answer }))
+  }
+
+  handleAddCard = () => {
+    const { dispatch, title } = this.props
+    const { question, answer } = this.state
+// Alert if user hit add card btn without adding question or answer
+// Adding same alert to test it on web.
+    if (question.length === 0 && answer.length === 0) {
+      Alert.alert(
+        "Please Enter a question & answer",
+        [
+          { text: 'OK' }
+        ]
+      )
+      alert(
+        "Please Enter a question & answer",
+        [
+          { text: 'OK' }
+        ]
+      )
+    } else {
+      const card = {
+        question,
+        answer
+      }
+
+      // Add card to deck 
+      dispatch(addCardToDeck(title, card))
+      this.setState(() => ({
+        question: '',
+        answer: ''
+      }))
+      // goBack - close active screen and move back in the stack
+      this.goBack()
+    }
+  }
+  goBack = () => {
+    this.props.navigation.dispatch(NavigationActions.back())
+  }
+
+  render() {
+    const { question, answer } = this.state
+// render The New Question view includes a form with
+//  fields for a question and answer, and a submit button.
+      return(
+        <View style={ styles.AddCardcontainer }>
+          <KeyboardAvoidingView style={ styles.AddCardinputContainer } behavior='padding' enabled>
+            <View>
+              <TextInput
+                style={ styles.AddCardinput }
+                placeholder={ 'Question' }
+                value={ question }
+                onChangeText={ this.handleQuestionCard }
+                multiline={ true }
+                numberOfLines={ 3 }
+                maxLength={ 100 }
+              />
+              <TextInput
+                style={ styles.AddCardinput }
+                placeholder={ 'Answer' }
+                value={ answer }
+                onChangeText={ this.handleAnswerCard}
+                multiline={ true }
+                numberOfLines={ 3 }
+                maxLength={ 100 }
+              />
+            </View>
+            <TextButton
+              style={ [styles.AddCardbutton, { marginTop: 100,  backgroundColor: pink}] }
+              onPress={ this.handleAddCard }>
+              Add Card
+            </TextButton>
+          </KeyboardAvoidingView>
+        </View>
+    )
+  }
+}
+
+function mapStateToProps(decks, { navigation }) {
+  const { title } = navigation.state.params
+
+  return {
+    title
+  }
+}
+
+export default connect(mapStateToProps)(AddCard)

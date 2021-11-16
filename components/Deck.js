@@ -1,117 +1,84 @@
-import React, { Component } from 'react';
-import { Text, TouchableOpacity, View, Image, Alert } from 'react-native';
-import { connect } from 'react-redux';
-import { styles } from '../utils/styles';
-import * as actions from '../actions';
-import * as storage from '../utils/api';
+import React, { Component } from 'react'
+import { View, Text, Alert} from 'react-native'
+import { connect } from 'react-redux'
+import { pink } from '../utils/colors'
+import TextButton from './TextButton'
+import styles from '../utils/styles'
+
 
 class Deck extends Component {
-  state = {
-    deck: null,
-  };
-
-  static navigationOptions = ({navigation}) => {
-    const {deckId, deckCover} = navigation.state.params;
-    return {
-      title: deckId,
-      image: deckCover
-    }
-  };
-
-  componentDidMount() {
-    const {navigation} = this.props;
-    const deckId = navigation.state.params.deckId;
-
-    storage.getDeck(deckId)
-      .then(deck => {
-        this.setState({deck: deck});
-      })
-  }
-
-  removeDeckAlert(title) {
-    Alert.alert(
-      'Hey,',
-      'Are you sure you wish to delete this deck?',
+   
+   handleQuizGame = () => {
+    const { navigation, title, cardsCount } = this.props
+   // Adding same alert to test it on web.
+    if (cardsCount === 0) {
+      Alert.alert("Please Add cards to this deck",
+        [
+          { text: 'OK' }
+        ]
+      )
+      alert("Please Add cards to this deck",
       [
-        {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        {
-          text: 'OK',
-          onPress: () => this.removeDeckAction(title)
-        },
-      ],
-      {cancelable: false},
-    );
+        { text: 'OK' }
+      ]
+    )
+    } else {
+      navigation.navigate('Quiz', { title })
+    }
   }
 
-  removeDeckAction(title) {
-    const {dispatch} = this.props;
-
-    storage.removeDeck(title)
-    .then(decks => {
-      dispatch(actions.removeDeckAction(decks));
-      this.props.navigation.navigate('DeckList');
-    })
-
+  handleAddCards = () => {
+    const { title, navigation } = this.props
+    navigation.navigate('AddCard', { title })
+  
   }
 
   render() {
+    const { title, cardsCount } = this.props
+ 
+// render deck view Option to start a quiz for that deck
+// Option to add a new question to the deck
     return (
-      <View style={styles.container}>
-        {this.state.deck &&
-          <View style={{flex: 1}}>
-            <View style={{flex: 0.8, justifyContent: 'flex-end', alignItems: 'center'}}>
-              <Text style={styles.deckTitleView}>{this.state.deck.title}</Text>
-              <Text style={styles.questionCount}>{this.state.deck.questions.length} cards</Text>
-            </View>
-            <View style={{flex: 1, justifyContent: 'flex-end'}}>
-              { this.state.deck.questions.length > 0 &&
-                <TouchableOpacity
-                  style={styles.button}
-                  onPress={() => this.props.navigation.navigate(
-                    'StartQuiz',
-                    {deck: this.state.deck}
-                  )}>  
-                    <Text style={styles.buttonText}>Start quiz</Text>
-                </TouchableOpacity>
-              }
-              <View style={styles.actionButtons}>
-                <TouchableOpacity
-                  style={[styles.button, styles.addCardButton]}
-                  onPress={() => this.props.navigation.navigate(
-                    'AddCard',
-                    {deckId: this.state.deck.title}
-                  )}>
-                  <Text style={styles.buttonText}>Add card</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.button, styles.removeDeckButton]}
-                  onPress={() => this.removeDeckAlert(this.state.deck.title
-                  )}>
-                  <Text style={[styles.buttonText, styles.buttonTextWhite]}>Delete Deck</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-            {this.state.deck.image !== "" &&
-              <Image
-                style={[styles.deckBackground, styles.deckBackgroundFullSize]}
-                source={{uri: this.state.deck.image}}
-              />
+      <View style={ styles.Deckcontainer}>
+        <View style= {styles.deckCard }>
+          <Text style={ styles.Deckheader }>
+            { title }
+          </Text>
+          <Text style={ styles.DecksubHeader }>
+            { cardsCount === 1
+              ? cardsCount + ' card'
+              : cardsCount + ' cards'
             }
+          </Text>
+        </View>
+        <View>
+        {/* Pressing the 'Start a Quiz' or 'Add Card' button properly routes to the
+         correct views for those activities. */}
+          <TextButton
+            style={ [styles.Deckbutton, { backgroundColor: pink }] }
+            onPress={ this.handleQuizGame }>
+              Start Quiz
+          </TextButton>
+          <TextButton
+            style={ [styles.Deckbutton, { backgroundColor: pink }] }
+            onPress={ this.handleAddCards }>
+              Add Card
+          </TextButton>
           </View>
-        }
       </View>
-    );
+    )
   }
 }
 
-function mapStateToProps(decks) {
-    return {
-      decks
-    }
+function mapStateToProps(decks, { navigation }) {
+  const { title } = navigation.state.params
+  const cardsCount = decks[title].questions.length
+  const deck = decks[title];
+  return {
+    deck,
+    title,
+    cardsCount
+  }
 }
 
-export default connect(mapStateToProps)(Deck);
+export default connect(mapStateToProps)(Deck)
