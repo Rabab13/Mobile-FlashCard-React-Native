@@ -2,7 +2,7 @@ import AsyncStorage  from '@react-native-async-storage/async-storage'
 import { QUIZ_STORAGE_KEY, setData } from './_DATA'
 
 
-export function getDecks() {
+export function getAllDecks() {
   return AsyncStorage.getItem(QUIZ_STORAGE_KEY)
     .then(setData)
 }

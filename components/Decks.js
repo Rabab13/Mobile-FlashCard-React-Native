@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { View, Text, ScrollView } from 'react-native'
 import { connect } from 'react-redux'
-import { getDecks } from '../utils/api'
-import { receiveDecks } from '../actions'
+import { getAllDecks } from '../utils/api'
+import { loadDeacks } from '../actions'
 import DeckCard from './DeckCard'
 import styles from '../utils/styles'
 
@@ -11,8 +11,8 @@ class Decks extends Component {
     const { dispatch } = this.props
 
     // Add Decks data to store
-    getDecks()
-      .then((decks) => dispatch(receiveDecks(decks)))
+    getAllDecks()
+      .then((decks) => dispatch(loadDeacks(decks)))
   }
 
 

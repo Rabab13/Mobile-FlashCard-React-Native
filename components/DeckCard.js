@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import styles from '../utils/styles'
 
 class DeckCard extends Component {
-  handleRoute = () => {
+  handleDeckCardRoute = () => {
     const { cardsCount, title, navigation } = this.props
 
     navigation.navigate('Deck', {
@@ -21,7 +21,7 @@ class DeckCard extends Component {
 
     return (
       <View style={ styles.card }>
-        <TouchableOpacity onPress={ this.handleRoute }>
+        <TouchableOpacity onPress={ this.handleDeckCardRoute }>
             <Text style={ styles.cardHeader }>
             { title }
           </Text>

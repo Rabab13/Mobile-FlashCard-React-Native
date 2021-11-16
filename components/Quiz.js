@@ -14,7 +14,7 @@ class Quiz extends Component {
     correctAnsCount: 0,
     incorrectAnsCount: 0
   }
-  handleToggleQuestionAnswer = () => {
+  handleQuestionAnswer = () => {
     this.setState((previousState) => ({
       viewAnswer: !previousState.viewAnswer
     }))
@@ -44,7 +44,7 @@ class Quiz extends Component {
       incorrectAnsCount: 0
     }))
   }
-  handleBackToDeck = () => {
+  handleGoBackToDeck = () => {
     const { deck, navigation } = this.props
     const title = deck.title
     navigation.navigate('Deck', { title })
@@ -62,7 +62,7 @@ class Quiz extends Component {
           correctAnsCount={ correctAnsCount }
           incorrectAnsCount={ incorrectAnsCount }
           restartQuiz={ this.handleRestartQuiz }
-          backToDeck={ this.handleBackToDeck }
+          backToDeck={ this.handleGoBackToDeck }
         />
       )
     }
@@ -88,7 +88,7 @@ class Quiz extends Component {
             <TextButton
               style={ [styles.QuizanswerBtn,
               { backgroundColor: water, justifyContent: 'center' }] }
-              onPress={ this.handleToggleQuestionAnswer }>
+              onPress={ this.handleQuestionAnswer }>
                 { viewAnswer
                   ? 'View Question'
                   : 'View Answer'

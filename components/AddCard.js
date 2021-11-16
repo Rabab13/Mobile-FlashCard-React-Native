@@ -10,16 +10,6 @@ import { pink } from '../utils/colors'
 import styles from '../utils/styles'
 
 
-// Create btn function in order to create new card.
-function SubmitBtn({ onPress }) {
-  return (
-    <TouchableOpacity
-      style={ Platform.OS === 'ios' ? styles.iosSubmitBtn : styles.androidSubmitBtn }
-      onPress={ onPress }>
-    </TouchableOpacity>
-  )
-}
-
 class AddCard extends Component {
    state = {
     question: '',

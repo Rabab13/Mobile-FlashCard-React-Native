@@ -3,7 +3,7 @@ export const ADD_DECK = 'ADD_DECK'
 export const ADD_CARD_TO_DECK = 'ADD_CARD_TO_DECK'
 
 
-export function receiveDecks(decks) {
+export function loadDeacks(decks) {
   return {
     type: RECEIVE_DECKS,
     decks
