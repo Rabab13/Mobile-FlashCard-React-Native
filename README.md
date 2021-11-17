@@ -1,9 +1,12 @@
 
 ## FlashCard.
 ##### Mobile Flashcards is Project 3 of Udacity's React Nanodegree. It is a simple iOS and Android flashcards app built using React Native. that allows users to create questions and arrange them in decks. it allows users to question themselves on individual deck and shows the average of correct questions over the entire questions
+<<<<<<< HEAD
 ![](assets/App09.png) ![](assets/App01.png) ![](assets/App02.png) ![](assets/App03.png)
 
 ![](assets/App05.png) ![](assets/App06.png) ![](assets/App07.png) ![](assets/App08.png)
+=======
+>>>>>>> a2aca9cd3a9776f5dbe7ab66af9cf8a8f10ac3c2
 
  ![](assets/App04.png)
 
